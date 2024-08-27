@@ -30,10 +30,10 @@ CREATE TABLE users_reviews(
 CREATE TABLE books(
     book_id INT GENERATED ALWAYS AS IDENTITY,
     title TEXT,
-    author TEXT[],
+    authors TEXT[],
     categories TEXT[], 
     lang VARCHAR(30),
-    isbn INT NOT NULL,
+    isbn BIGINT NOT NULL,
     image TEXT,
     PRIMARY KEY(book_id)
 );
