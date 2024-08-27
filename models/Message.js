@@ -1,0 +1,31 @@
+const db = require("../db/connect");
+
+class Message {
+  constructor({ message_id, room_id, user_sent, message, sent_at }) {
+    this.message_id = message_id;
+    this.room_id = room_id;
+    this.user_sent = user_sent;
+    this.message = message;
+    this.sent_at = sent_at;
+  }
+
+  static async getMessages(room_id) {
+    const response = await db.query(
+      "SELECT * FROM message WHERE room_id = $1;",
+      [room_id]
+    );
+
+    return response.rows.map((msg) => new Message(msg));
+  }
+
+  static async createMessage({ room_id, user_sent, message }) {
+    const response = await db.query(
+      "INSERT INTO message (room_id, author, message) VALUES ($1, $2, $3);",
+      [room_id, user_sent, message]
+    );
+
+    return new Message(response.rows[0]);
+  }
+}
+
+module.exports = Message;
