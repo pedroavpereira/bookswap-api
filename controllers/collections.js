@@ -5,9 +5,11 @@ const Book = require("../models/Book");
 
 const booksExternalApi = `https://www.googleapis.com/books/v1/`;
 
-const create = async (req, res) => {
-  const { isbn, condition, delivery_preference } = req.body;
+const mockUser = 1;
 
+const create = async (req, res) => {
+  const { condition, delivery_preference } = req.body;
+  const isbn = parseInt(req.body.isbn);
   try {
     let book = await Book.findByISBN(isbn);
 
@@ -17,22 +19,30 @@ const create = async (req, res) => {
       newCollection = await Collection.create({
         book_id: book.book_id,
         condition,
+        user_id: mockUser, // CHANGE TO REAL USER
         delivery_preference,
       });
     } else {
       const externalBook = await axios(
         `${booksExternalApi}volumes?q=isbn:${isbn}`
       ); //Fetch from external
+      if (externalBook.data.totalItems === 0)
+        throw new Error("ISBN provided is incorrect");
+
+      bookData = externalBook.data.items[0];
+
+      console.log(isbn);
       const newBook = await Book.create({
-        title: externalBook.items[0].volumeInfo.title,
-        authors: externalBook.items[0].volumeInfo.authors,
-        categories: externalBook.items[0].volumeInfo.categories,
-        lang: externalBook.items[0].volumeInfo.language,
+        title: bookData.volumeInfo.title,
+        authors: bookData.volumeInfo.authors,
+        categories: bookData.volumeInfo.categories,
+        lang: bookData.volumeInfo.language,
         isbn: isbn,
-        image: externalBook.items[0].volumeInfo.imageLinks.thumbnail,
+        image: bookData.volumeInfo.imageLinks.thumbnail,
       });
       newCollection = await Collection.create({
         book_id: newBook.book_id,
+        user_id: mockUser, // CHANGE TO REAL USER
         condition,
         delivery_preference,
       });
