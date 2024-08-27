@@ -24,6 +24,17 @@ describe('Review', () => {
       expect(reviews[0].review_id).toBe(1);
       expect(db.query).toHaveBeenCalledWith("SELECT * FROM users_reviews;");
     });
+
+    it('returns an empty array when no reviews are found', async () => {
+      // Arrange
+      jest.spyOn(db, 'query').mockResolvedValueOnce({ rows: [] });
+
+      // Act
+      const reviews = await Review.getAll();
+
+      // Assert
+      expect(reviews).toEqual([]);
+    });
   });
 
   describe('getByUserId', () => {
@@ -41,6 +52,18 @@ describe('Review', () => {
       expect(reviews[0]).toBeInstanceOf(Review);
       expect(reviews[0].user_id).toBe(userId);
       expect(db.query).toHaveBeenCalledWith("SELECT * FROM users_reviews WHERE user_id = $1;", [userId]);
+    });
+
+    it('returns an empty array when no reviews are found for a user', async () => {
+      // Arrange
+      const userId = 1;
+      jest.spyOn(db, 'query').mockResolvedValueOnce({ rows: [] });
+
+      // Act
+      const reviews = await Review.getByUserId(userId);
+
+      // Assert
+      expect(reviews).toEqual([]);
     });
   });
 
@@ -86,6 +109,15 @@ describe('Review', () => {
         [updatedData.rating, updatedData.message, review.review_id]
       );
     });
+
+    it('should throw an error if unable to update review', async () => {
+      // Arrange
+      const review = new Review({ review_id: 1, rating: 5, message: 'Good', user_id: 1, submitted_by: 'user1' });
+      jest.spyOn(db, 'query').mockResolvedValueOnce({ rows: [] });
+
+      // Act & Assert
+      await expect(review.update({ rating: 4, message: 'Better than good' })).rejects.toThrow('Unable to update review.');
+    });
   });
 
   describe('destroy', () => {
@@ -101,6 +133,15 @@ describe('Review', () => {
       expect(result).toBeInstanceOf(Review);
       expect(result.review_id).toBe(1);
       expect(db.query).toHaveBeenCalledWith("DELETE FROM users_reviews WHERE review_id = $1 RETURNING *;", [review.review_id]);
+    });
+
+    it('should throw an error if unable to delete review', async () => {
+      // Arrange
+      const review = new Review({ review_id: 1, rating: 5, message: 'Great!', user_id: 1, submitted_by: 'user1' });
+      jest.spyOn(db, 'query').mockResolvedValueOnce({ rows: [] });
+
+      // Act & Assert
+      await expect(review.destroy()).rejects.toThrow('Unable to delete review.');
     });
   });
 
