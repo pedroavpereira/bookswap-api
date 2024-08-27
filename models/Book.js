@@ -24,9 +24,12 @@ class Book{
 
     }
 
-    static async create(title, authors, categories, lang, isbn, image) {  
+    static async create({title, authors, categories, lang, isbn, image}) {  
+    
         let response = await db.query("INSERT INTO books (title, authors, categories, lang, isbn, image) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;", [title, authors, categories, lang, isbn, image]);
         return new Book(response.rows[0]);  
         
     }
 }
+
+module.exports = Book
