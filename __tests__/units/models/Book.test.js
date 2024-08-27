@@ -9,14 +9,19 @@ describe('Book', () => {
     describe('findByISBN', () => {
         it('shows the details of a book with ISBN number', async () => {
 
-            const testBook = {book_id: 5, title: 'Tulip', authors: ['Aa Be', 'Se Hn'], categories: ['Fiction', 'History'], lang: 'Eng', isbn: '887-45-33211-07-9', image: 'dgaujn_vwnaidjb_fsndjbfv_vsnnchsbkf.png'};
+            const testBook = {book_id: 1, title: 'Tulip', authors: ['Aa Be', 'Se Hn'], categories: ['Fiction', 'History'], lang: 'Eng', isbn: '887-45-33211-07-9', image: 'dgaujn_vwnaidjb_fsndjbfv_vsnnchsbkf.png'};
             jest.spyOn(db, 'query').mockResolvedValueOnce({ rows: [testBook] });
 
             //Act
 
             const result = await Book.findByISBN('887-45-33211-07-9')
+            console.log("In test, result: ", result)
+            console.log("IS result instance of Book: ", result instanceof Book)
 
             expect(result).toBeInstanceOf(Book);
+            console.log("In line 21 of Test")
+            expect(result.book_id).toBe(1);
+
             expect(result.title).toBe('Tulip');
             expect(result.authors).toBe( ['Aa Be', 'Se Hn']);
             expect(result.categories).toBe(['Fiction', 'History']);
