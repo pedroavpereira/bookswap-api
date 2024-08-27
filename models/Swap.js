@@ -14,10 +14,10 @@ class Swap {
 
 
     static async create(swapData) {
-        const { user_requesting, collection_requested, user_offered, collection_offered, status, completed } = swapData;
+        const { user_requesting, collection_requested, user_offered} = swapData;
         const created_at = new Date();
     
-        const result = await db.query(`INSERT INTO swaps(user_requesting, collection_requested, user_offered, collection_offered, created_at, status, completed) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`, [user_requesting, collection_requested, user_offered, collection_offered, created_at, status, completed]);
+        const result = await db.query(`INSERT INTO swaps(user_requesting, collection_requested, user_offered) VALUES ($1, $2, $3) RETURNING *`, [user_requesting, collection_requested, user_offered]);
         return new Swap(result.rows[0])
     }
 
@@ -26,14 +26,24 @@ class Swap {
         return new Swap(result.rows[0])
     }
     
-    static async delete(swap_id) {
-        const result = await db.query(`DELETE FROM swaps WHERE swap_id = $1 RETURNING *`, [swap_id])
+    async delete(swap_id) {
+        const result = await db.query(`DELETE FROM swaps WHERE swap_id = $1 RETURNING *`, [this.swap_id])
         return result.rows.length > 0;
     }
 
     static async findByUserId(user_id) {
         const result = await db.query(`SELECT * FROM swaps WHERE user_requesting = $1 OR user_offered = $1`, [user_id])
-        return SpeechRecognitionResultList.rows.map(row => new Swap(row))
+        return result.rows.map(row => new Swap(row))
+    }
+
+    static async findBySwapId(swap_id) {
+        const result = await db.query(`SELECT * FROM swaps WHERE swap_id = $1`, [swap_id])
+
+        if(result.rows.length > 0) {
+            return new Swap(result.rows[0])
+        }else {
+            return null
+        }
     }
 }
 
