@@ -1,5 +1,5 @@
 const { Pool } = require("pg");
-
+require('dotenv').config();
 const connections = {
   production: {
     user: process.env.DB_USER,
@@ -8,6 +8,7 @@ const connections = {
     password: process.env.DB_PASSWORD,
     port: process.env.DB_PORT,
   },
+
   development: { connectionString: process.env.DB_URL },
   testing: { connectionString: process.env.DB_TEST_URL },
 };

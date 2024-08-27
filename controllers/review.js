@@ -1,41 +1,37 @@
-const Review = require('../models/review');  
+const Review = require('../models/Review');
 
-// Create a new review
 async function create(req, res) {
     try {
         const data = req.body;
-        const newReview = await Review.create(data);  // Call the static create method on the Review class
+        const newReview = await Review.create(data);
         res.status(201).json(newReview);
     } catch (err) {
-        console.error("Error creating review:", err);  // Log the error to the console
-        res.status(400).json({ error: err.message });
+        console.error("Error creating review:", err);
+        res.status(400).json({ error: err.message || "An unknown error occurred" });
     }
 }
 
-
-// Get all reviews by user_id
 async function show(req, res) {
     try {
         const userId = parseInt(req.params.user_id);
-        const reviews = await Review.getByUserId(userId);  
+        const reviews = await Review.getByUserId(userId);
         res.status(200).json(reviews);
     } catch (err) {
-        res.status(404).json({ error: err.message });
+        console.error("Error fetching reviews:", err);
+        res.status(404).json({ error: err.message || "Reviews not found" });
     }
 }
 
-// Delete a review by review_id
 async function destroy(req, res) {
     try {
         const reviewId = parseInt(req.params.review_id);
-        const review = await Review.getById(reviewId);   
-        await review.destroy();   
+        const review = await Review.getById(reviewId);
+        await review.destroy();
         res.status(204).end();
     } catch (err) {
-        res.status(404).json({ error: err.message });
+        console.error("Error deleting review:", err);
+        res.status(404).json({ error: err.message || "Review not found" });
     }
 }
 
-// Export the controller functions
 module.exports = { create, show, destroy };
-

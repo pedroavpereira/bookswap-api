@@ -1,4 +1,4 @@
-const db = require('../db/connect');  
+const db = require('../db/connect');
 
 class Review {
     constructor({ review_id, rating, message, user_id, submitted_by }) {
@@ -11,27 +11,20 @@ class Review {
 
     // Get all reviews
     static async getAll() {
-        const response = await db.query("SELECT * FROM user_reviews;");
-        if (response.rows.length === 0) {
-            throw new Error("No reviews available.");
-        }
+        const response = await db.query("SELECT * FROM users_reviews;");
         return response.rows.map(r => new Review(r));
     }
 
     // Get all reviews by a specific user_id
     static async getByUserId(user_id) {
-        const response = await db.query("SELECT * FROM user_reviews WHERE user_id = $1;", [user_id]);
-        if (response.rows.length === 0) {
-            throw new Error("No reviews found for this user.");
-        }
+        const response = await db.query("SELECT * FROM users_reviews WHERE user_id = $1;", [user_id]);
         return response.rows.map(r => new Review(r));
     }
 
     // Create a new review
-    static async create(data) {
-        const { rating, message, user_id, submitted_by } = data;
+    static async create({ rating, message, user_id, submitted_by }) {
         const response = await db.query(
-            "INSERT INTO user_reviews (rating, message, user_id, submitted_by) VALUES ($1, $2, $3, $4) RETURNING *;",
+            "INSERT INTO users_reviews (rating, message, user_id, submitted_by) VALUES ($1, $2, $3, $4) RETURNING *;",
             [rating, message, user_id, submitted_by]
         );
         return new Review(response.rows[0]);
@@ -40,7 +33,7 @@ class Review {
     // Update an existing review
     async update(data) {
         const response = await db.query(
-            "UPDATE user_reviews SET rating = $1, message = $2 WHERE review_id = $3 RETURNING *;",
+            "UPDATE users_reviews SET rating = $1, message = $2 WHERE review_id = $3 RETURNING *;",
             [data.rating, data.message, this.review_id]
         );
         if (response.rows.length !== 1) {
@@ -52,7 +45,7 @@ class Review {
     // Delete a review by review_id
     async destroy() {
         const response = await db.query(
-            "DELETE FROM user_reviews WHERE review_id = $1 RETURNING *;",
+            "DELETE FROM users_reviews WHERE review_id = $1 RETURNING *;",
             [this.review_id]
         );
         if (response.rows.length !== 1) {
@@ -63,13 +56,13 @@ class Review {
 
     // Get a review by its ID
     static async getById(review_id) {
-        const response = await db.query("SELECT * FROM user_reviews WHERE review_id = $1;", [review_id]);
+        const response = await db.query("SELECT * FROM users_reviews WHERE review_id = $1;", [review_id]);
         if (response.rows.length === 0) {
             throw new Error("Review not found.");
         }
         return new Review(response.rows[0]);
     }
-
 }
 
 module.exports = Review;
+
