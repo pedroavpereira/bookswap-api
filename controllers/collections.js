@@ -20,7 +20,9 @@ const create = async (req, res) => {
         delivery_preference,
       });
     } else {
-      const externalBook = axios(`${booksExternalApi}volumes?q=isbn:${isbn}`); //Fetch from external
+      const externalBook = await axios(
+        `${booksExternalApi}volumes?q=isbn:${isbn}`
+      ); //Fetch from external
       const newBook = await Book.create({
         title: externalBook.items[0].volumeInfo.title,
         authors: externalBook.items[0].volumeInfo.authors,
