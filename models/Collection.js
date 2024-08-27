@@ -23,6 +23,17 @@ class Collection {
     return new Collection(response.rows[0]);
   }
 
+  static async findById(id) {
+    const response = await db.query(
+      "SELECT * FROM book_collections WHERE collection_id = $1",
+      [id]
+    );
+
+    if (response.rows.length === 0) return [];
+
+    return new Collection(response.rows[0]);
+  }
+
   static async showByUserId(user_id) {
     const response = await db.query(
       "SELECT * FROM book_collections WHERE user_id = $1",
@@ -58,7 +69,7 @@ ORDER BY distance; `,
     return response.rows.map((col) => new Collection(col));
   }
 
-  async delete() {
+  async destroy() {
     const response = await db.query(
       "DELETE FROM book_collections WHERE collection_id = $1 RETURNING *",
       [this.collection_id]
