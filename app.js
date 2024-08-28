@@ -10,6 +10,6 @@ app.use(express.json());
 
 app.use("/reviews", reviewRouter);
 
-app.use("/collection", collectionsRouter);
+app.use("/collections", collectionsRouter);
 
 module.exports = app;
