@@ -72,12 +72,22 @@ const searchProximity = async (req, res) => {
     const { radius, lat, lng, title } = req.query;
     const formattedTitle = title.replaceAll("+", " ");
 
-    const searchResults = await Collection.findTitleInsideRadius({
+    const collection = await Collection.findTitleInsideRadius({
       radius,
       lat,
       lng,
       title: formattedTitle,
     });
+
+    const searchResults = await Promise.all(
+      collection.map(async (col) => {
+        const book = await Book.findById(col.book_id);
+
+        console.log(book);
+
+        return { ...col, book };
+      })
+    );
 
     res.status(200).json(searchResults);
   } catch (err) {
@@ -89,7 +99,19 @@ const searchProximity = async (req, res) => {
 const searchByUser = async (req, res) => {
   const user_id = req.params.user_id;
   try {
-    const results = await Collection.showByUserId(user_id);
+    const collection = await Collection.showByUserId(user_id);
+
+    // console.log(collections);
+
+    const results = await Promise.all(
+      collection.map(async (col) => {
+        const book = await Book.findById(col.book_id);
+
+        console.log(book);
+
+        return { ...col, book };
+      })
+    );
 
     res.status(200).json(results);
   } catch (err) {
