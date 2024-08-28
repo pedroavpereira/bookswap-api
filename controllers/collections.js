@@ -23,7 +23,7 @@ const create = async (req, res) => {
         delivery_preference,
       });
     } else {
-      const externalBook = await axios(
+      const externalBook = await axios.get(
         `${booksExternalApi}volumes?q=isbn:${isbn}`
       ); //Fetch from external
       if (externalBook.data.totalItems === 0)
@@ -31,7 +31,6 @@ const create = async (req, res) => {
 
       bookData = externalBook.data.items[0];
 
-      console.log(isbn);
       const newBook = await Book.create({
         title: bookData.volumeInfo.title,
         authors: bookData.volumeInfo.authors,
@@ -77,7 +76,7 @@ const searchProximity = async (req, res) => {
       radius,
       lat,
       lng,
-      formattedTitle,
+      title: formattedTitle,
     });
 
     res.status(200).json(searchResults);
