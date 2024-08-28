@@ -10,7 +10,7 @@ class Wishlist {
 
     static async create({user_id, book_id, radius}) {
         try {
-            const result = await db.query(`INSERT INTO wishlists (user_id, book_id, radius) VALUES ($1, $2, $3) RETURNING wishlist_id, user_id, book_id, radius`, [user_id, book_id, radius])
+            const result = await db.query(`INSERT INTO wishlists (user_id, book_id, radius) VALUES ($1, $2, $3) RETURNING *`, [user_id, book_id, radius])
             return new Wishlist(result.rows[0])
         }catch (err) {
             throw new Error("Error creating whislist entry:" + err.message)
@@ -19,7 +19,7 @@ class Wishlist {
 
     static async findByUserId(user_id) {
         try {
-            const result = await db.query(`SELECT wishlist_id, user_id, book_id, radius FROM wishlists WHERE user_id = $1`, [user_id])
+            const result = await db.query(`SELECT * FROM wishlists WHERE user_id = $1`, [user_id])
             return result.rows.map(row => new Whislist(row))
         } catch (err) {
             throw new Error("Error finding wishlist by user_id: " + err.message)
@@ -28,7 +28,7 @@ class Wishlist {
 
     async destroy() {
         try {
-            const result = await db.query(`DELETE FROM wishlists WHERE wishlist_id = $1 RETURNING wishlist_id`, [this.wishlist_id])
+            const result = await db.query(`DELETE FROM wishlists WHERE wishlist_id = $1 RETURNING *`, [this.wishlist_id])
             return result.rows.length > 0
         }catch (err) {
             throw new Error("Error deleting wishlist entry: " + err.message)
