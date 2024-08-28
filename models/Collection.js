@@ -75,8 +75,6 @@ ORDER BY distance; `,
       [this.collection_id]
     );
 
-    if (response.rows.length === 0) throw new Error("Error deleting");
-
     return new Collection(response.rows[0]);
   }
 }
