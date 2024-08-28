@@ -22,6 +22,17 @@ class Book {
     return new Book(response.rows[0]);
   }
 
+  static async findById(id) {
+    const response = await db.query("SELECT * FROM books WHERE book_id = $1;", [
+      id,
+    ]);
+    if (response.rows.length != 1) {
+      return null;
+    }
+
+    return new Book(response.rows[0]);
+  }
+
   static async create({ title, authors, categories, lang, isbn, image }) {
     let response = await db.query(
       "INSERT INTO books (title, authors, categories, lang, isbn, image) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;",
