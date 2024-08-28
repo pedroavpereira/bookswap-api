@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test": "jest --watchAll --verbose --detectOpenHandles --runInBand",
+    "coverage": "jest --coverage",
     "start": "node index.js",
     "dev": "nodemon -L index.js"
   },
@@ -19,6 +21,7 @@
     "socket.io": "^4.7.5"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
     "nodemon": "^3.1.4"
   }
 }

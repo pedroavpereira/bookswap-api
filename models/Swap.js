@@ -26,7 +26,7 @@ class Swap {
         return new Swap(result.rows[0])
     }
     
-    async delete(swap_id) {
+    async destroy() {
         const result = await db.query(`DELETE FROM swaps WHERE swap_id = $1 RETURNING *`, [this.swap_id])
         return result.rows.length > 0;
     }
