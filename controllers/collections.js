@@ -2,6 +2,7 @@ const axios = require("axios");
 
 const Collection = require("../models/Collection");
 const Book = require("../models/Book");
+const User = require("../models/User");
 
 const booksExternalApi = `https://www.googleapis.com/books/v1/`;
 
@@ -70,8 +71,8 @@ const destroy = async (req, res) => {
 const searchProximity = async (req, res) => {
   try {
     const { radius, lat, lng, title } = req.query;
-    const formattedTitle = title.replaceAll("+", " ");
-
+    const formattedTitle = title.replaceAll("%20", " ").toLowerCase();
+    console.log(radius, lat, lng, formattedTitle);
     const collection = await Collection.findTitleInsideRadius({
       radius,
       lat,
@@ -82,14 +83,19 @@ const searchProximity = async (req, res) => {
     const searchResults = await Promise.all(
       collection.map(async (col) => {
         const book = await Book.findById(col.book_id);
-
-        console.log(book);
-
-        return { ...col, book };
+        const user = await User.findById(col.user_id);
+        return { ...col, book, user };
       })
     );
 
-    res.status(200).json(searchResults);
+    // console.log(searchResults);
+
+    const filteredResults = searchResults.filter(
+      (col) => col.book.title.toLowerCase() === formattedTitle
+    );
+    console.log(filteredResults);
+
+    res.status(200).json(filteredResults);
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: err });
@@ -106,10 +112,8 @@ const searchByUser = async (req, res) => {
     const results = await Promise.all(
       collection.map(async (col) => {
         const book = await Book.findById(col.book_id);
-
-        console.log(book);
-
-        return { ...col, book };
+        const user = await User.findById(col.user_id);
+        return { ...col, book, user };
       })
     );
 
