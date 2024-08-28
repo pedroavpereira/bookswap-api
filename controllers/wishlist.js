@@ -10,7 +10,7 @@ async function create(req, res) {
         res.status(400).json({ error: err.message || "An unknown error occurred" });
     }
 }
-
+// show function:
 async function show(req, res) {
     try {
         const userId = parseInt(req.params.user_id);
