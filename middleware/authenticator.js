@@ -9,6 +9,7 @@ const authenticator = async (req, res, next) => {
     req.user_id = response.data.user_id;
     next();
   } catch (err) {
+    console.log(err);
     res.status(401).json({ error: "Route requires authentication" });
   }
 };
