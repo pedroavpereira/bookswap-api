@@ -40,30 +40,6 @@ CREATE TABLE books(
     PRIMARY KEY(book_id)
 );
 
-CREATE TABLE chat_rooms(
-    room_id INT GENERATED ALWAYS AS IDENTITY,
-    user_1 INT,
-    user_2 INT,
-    swap_id INT,     
-    PRIMARY KEY(room_id),
-    FOREIGN KEY (swap_id) REFERENCES swaps(swap_id),
-    FOREIGN KEY (user_1) REFERENCES users(user_id),
-    FOREIGN KEY (user_2) REFERENCES users(user_id)
-);
-
-CREATE TABLE messages(
-    message_id INT GENERATED ALWAYS AS IDENTITY,
-    room_id INT,
-    user_sent INT,
-    message TEXT, 
-    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (message_id),
-    FOREIGN KEY (room_id) REFERENCES chat_rooms(room_id),
-    FOREIGN KEY (user_sent) REFERENCES users(user_id)
-
-);
-
-
 CREATE TABLE book_collections(
     collection_id INT GENERATED ALWAYS AS IDENTITY,
     book_id INT,
@@ -91,6 +67,30 @@ CREATE TABLE swaps(
     FOREIGN KEY (user_offered) REFERENCES users(user_id),
     FOREIGN KEY (collection_offered) REFERENCES book_collections(collection_id)
 );
+
+CREATE TABLE chat_rooms(
+    room_id INT GENERATED ALWAYS AS IDENTITY,
+    user_1 INT,
+    user_2 INT,
+    swap_id INT,     
+    PRIMARY KEY(room_id),
+    FOREIGN KEY (swap_id) REFERENCES swaps(swap_id),
+    FOREIGN KEY (user_1) REFERENCES users(user_id),
+    FOREIGN KEY (user_2) REFERENCES users(user_id)
+);
+
+CREATE TABLE messages(
+    message_id INT GENERATED ALWAYS AS IDENTITY,
+    room_id INT,
+    user_sent INT,
+    message TEXT, 
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (message_id),
+    FOREIGN KEY (room_id) REFERENCES chat_rooms(room_id),
+    FOREIGN KEY (user_sent) REFERENCES users(user_id)
+
+);
+
 
 
 CREATE TABLE wishlists(
