@@ -4,7 +4,7 @@ const reviewRouter = require("./routes/reviewRouter");
 const collectionsRouter = require("./routes/collections");
 const wishlistRouter = require('./routes/wishlistRouter')
 const roomsRouter = require("./routes/rooms");
-
+const bookRatingsRouter = require("./routes/bookRatingsRouter");
 
 const app = express();
 
@@ -18,5 +18,7 @@ app.use("/collections", collectionsRouter);
 app.use("/rooms", roomsRouter);
 
 app.use("/wishlists", wishlistRouter);
+
+app.use("/bookratings",  bookRatingsRouter);
 
 module.exports = app;
