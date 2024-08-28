@@ -5,6 +5,8 @@ DROP TABLE IF EXISTS messages;
 DROP TABLE IF EXISTS chat_rooms;
 DROP TABLE IF EXISTS swaps;
 DROP TABLE IF EXISTS book_collections;
+DROP TABLE IF EXISTS wishlists;
+DROP TABLE IF EXISTS books_ratings;
 
 CREATE TABLE users(
     user_id INT GENERATED ALWAYS AS IDENTITY,
@@ -85,6 +87,27 @@ CREATE TABLE book_collections(
     condition TEXT,
     delivery_preference TEXT[], 
     PRIMARY KEY(collection_id),
+    FOREIGN KEY (book_id) REFERENCES books(book_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+
+CREATE TABLE wishlists(
+    wishlist_id INT GENERATED ALWAYS AS IDENTITY,
+    user_id INT,
+    book_id INT,
+    radius FLOAT,
+    PRIMARY KEY(wishlist_id),
+    FOREIGN KEY (book_id) REFERENCES books(book_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE books_ratings(
+    ratings_id INT GENERATED ALWAYS AS IDENTITY,
+    user_id INT,
+    book_id INT,
+    rating INT,
+    PRIMARY KEY(ratings_id),
     FOREIGN KEY (book_id) REFERENCES books(book_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
