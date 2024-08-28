@@ -20,7 +20,7 @@ class Wishlist {
     static async findByUserId(user_id) {
         try {
             const result = await db.query(`SELECT * FROM wishlists WHERE user_id = $1`, [user_id])
-            return result.rows.map(row => new Whislist(row))
+            return result.rows.map(row => new Wishlist(row))
         } catch (err) {
             throw new Error("Error finding wishlist by user_id: " + err.message)
         }
