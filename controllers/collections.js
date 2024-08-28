@@ -2,6 +2,7 @@ const axios = require("axios");
 
 const Collection = require("../models/Collection");
 const Book = require("../models/Book");
+const User = require("../models/User");
 
 const booksExternalApi = `https://www.googleapis.com/books/v1/`;
 
@@ -82,8 +83,8 @@ const searchProximity = async (req, res) => {
     const searchResults = await Promise.all(
       collection.map(async (col) => {
         const book = await Book.findById(col.book_id);
-
-        return { ...col, book };
+        const user = await User.findById(col.user_id);
+        return { ...col, book, user };
       })
     );
 
