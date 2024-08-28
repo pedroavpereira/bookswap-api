@@ -70,8 +70,8 @@ const destroy = async (req, res) => {
 const searchProximity = async (req, res) => {
   try {
     const { radius, lat, lng, title } = req.query;
-    const formattedTitle = title.replaceAll("+", " ");
-
+    const formattedTitle = title.replaceAll("%20", " ").toLowerCase();
+    console.log(radius, lat, lng, formattedTitle);
     const collection = await Collection.findTitleInsideRadius({
       radius,
       lat,
@@ -83,13 +83,18 @@ const searchProximity = async (req, res) => {
       collection.map(async (col) => {
         const book = await Book.findById(col.book_id);
 
-        console.log(book);
-
         return { ...col, book };
       })
     );
 
-    res.status(200).json(searchResults);
+    // console.log(searchResults);
+
+    const filteredResults = searchResults.filter(
+      (col) => col.book.title.toLowerCase() === formattedTitle
+    );
+    console.log(filteredResults);
+
+    res.status(200).json(filteredResults);
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: err });
