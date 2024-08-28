@@ -102,6 +102,20 @@ const searchProximity = async (req, res) => {
   }
 };
 
+const searchById = async (req, res) => {
+  try {
+    const collection_id = req.params.collection_id;
+
+    const collection = await Collection.findById(collection_id);
+    const book = await Book.findById(collection.book_id);
+    const user = await User.findById(collection.user_id);
+
+    res.status(200).json({ ...collection, book, user });
+  } catch (err) {
+    res.status(500).json({ error: err });
+  }
+};
+
 const searchByUser = async (req, res) => {
   const user_id = req.params.user_id;
   try {
@@ -124,4 +138,4 @@ const searchByUser = async (req, res) => {
   }
 };
 
-module.exports = { create, searchProximity, destroy, searchByUser };
+module.exports = { create, searchProximity, destroy, searchByUser, searchById };

@@ -28,7 +28,6 @@ class Collection {
       "SELECT * FROM book_collections WHERE collection_id = $1",
       [id]
     );
-
     if (response.rows.length === 0) return [];
 
     return new Collection(response.rows[0]);
