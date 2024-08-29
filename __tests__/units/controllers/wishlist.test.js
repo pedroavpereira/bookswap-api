@@ -50,34 +50,35 @@ describe('Wishlist controller', () => {
     })
   })
 
-//   describe ('create', () => {
-//     it('should return a new goat with a 201 status code', async () => {
-//       let testGoat = { name: 'Test Goat', age: 2 }
-//       const mockReq = { body: testGoat }
+  describe ('create', () => {
+    it('should return a new wishlist with a 201 status code', async () => {
+      let testWishlist = {user_id: 1, book_id: 3, radius: 9.5 }
+      const mockReq = { body: testWishlist }
+      const wishlist_id = 1
 
-//       jest.spyOn(Goat, 'create').mockResolvedValue(new Goat(testGoat))
+      jest.spyOn(Wishlist, 'create').mockResolvedValue(new Wishlist(testWishlist.user_id, testWishlist.book_id, testWishlist.radius, wishlist_id))
 
-//       await goatsController.create(mockReq, mockRes)
+      await wishlistController.create(mockReq, mockRes)
       
-//       expect(Goat.create).toHaveBeenCalledTimes(1)
-//       expect(mockStatus).toHaveBeenCalledWith(201)
-//       expect(mockSend).toHaveBeenCalledWith({ data: new Goat({ ...testGoat }) })
-//     })
+      expect(Wishlist.create).toHaveBeenCalledTimes(1)
+      expect(mockStatus).toHaveBeenCalledWith(201)
+      expect(mockJson).toHaveBeenCalledWith(new Wishlist(testWishlist.user_id, testWishlist.book_id, testWishlist.radius, wishlist_id))
+    })
 
 
-//     it('should return an error if creation fails', async () => {
-//       let testGoat = { name: 'Test Goat' }
-//       const mockReq = { body: testGoat }
+    it('should return an error if wishlist is not able to be created.', async () => {
+      let testWishlist = {book_id: 3, radius: 9.5 }
+      const mockReq = { body: testWishlist }
 
-//       jest.spyOn(Goat, 'create').mockRejectedValue(new Error('oh no'))
+      jest.spyOn(Wishlist, 'create').mockRejectedValue(new Error('oh no'))
 
-//       await goatsController.create(mockReq, mockRes)
+      await wishlistController.create(mockReq, mockRes)
       
-//       expect(Goat.create).toHaveBeenCalledTimes(1)
-//       expect(mockStatus).toHaveBeenCalledWith(400)
-//       expect(mockSend).toHaveBeenCalledWith({ error: 'oh no' })
-//     })
-//   })
+      expect(Wishlist.create).toHaveBeenCalledTimes(1)
+      expect(mockStatus).toHaveBeenCalledWith(400)
+      expect(mockJson).toHaveBeenCalledWith({ error: 'oh no' })
+    })
+  })
 
 
 
