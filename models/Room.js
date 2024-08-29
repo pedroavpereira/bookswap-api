@@ -9,9 +9,10 @@ class Room {
   }
 
   static async getRoom(room_id) {
-    const response = await db.query("SELECT * FROM rooms WHERE room_id = $1", [
-      room_id,
-    ]);
+    const response = await db.query(
+      "SELECT * FROM chat_rooms WHERE room_id = $1",
+      [room_id]
+    );
 
     if (response.rows.length === 0) return null;
 
@@ -20,7 +21,7 @@ class Room {
 
   static async getRooms(user_id) {
     const response = await db.query(
-      "SELECT * FROM rooms WHERE (user_1 = $1 OR user_2 = $1) AND closed = false ",
+      "SELECT * FROM chat_rooms WHERE (user_1 = $1 OR user_2 = $1)",
       [user_id]
     );
 
@@ -31,7 +32,7 @@ class Room {
 
   static async create({ user_1, user_2, swap_id }) {
     const response = await db.query(
-      "INSERT into rooms (user_1 , user_2, swap) VALUES ($1, $2) RETURNING *;",
+      "INSERT into chat_rooms (user_1 , user_2, swap) VALUES ($1, $2) RETURNING *;",
       [user_1, user_2, swap_id]
     );
 

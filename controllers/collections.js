@@ -2,6 +2,7 @@ const axios = require("axios");
 
 const Collection = require("../models/Collection");
 const Book = require("../models/Book");
+const User = require("../models/User");
 
 const booksExternalApi = `https://www.googleapis.com/books/v1/`;
 
@@ -23,7 +24,7 @@ const create = async (req, res) => {
         delivery_preference,
       });
     } else {
-      const externalBook = await axios(
+      const externalBook = await axios.get(
         `${booksExternalApi}volumes?q=isbn:${isbn}`
       ); //Fetch from external
       if (externalBook.data.totalItems === 0)
@@ -31,7 +32,6 @@ const create = async (req, res) => {
 
       bookData = externalBook.data.items[0];
 
-      console.log(isbn);
       const newBook = await Book.create({
         title: bookData.volumeInfo.title,
         authors: bookData.volumeInfo.authors,
@@ -71,16 +71,31 @@ const destroy = async (req, res) => {
 const searchProximity = async (req, res) => {
   try {
     const { radius, lat, lng, title } = req.query;
-    const formattedTitle = title.replaceAll("+", " ");
-
-    const searchResults = await Collection.findTitleInsideRadius({
+    const formattedTitle = title.replaceAll("%20", " ").toLowerCase();
+    console.log(radius, lat, lng, formattedTitle);
+    const collection = await Collection.findTitleInsideRadius({
       radius,
       lat,
       lng,
-      formattedTitle,
+      title: formattedTitle,
     });
 
-    res.status(200).json(searchResults);
+    const searchResults = await Promise.all(
+      collection.map(async (col) => {
+        const book = await Book.findById(col.book_id);
+        const user = await User.findById(col.user_id);
+        return { ...col, book, user };
+      })
+    );
+
+    // console.log(searchResults);
+
+    const filteredResults = searchResults.filter(
+      (col) => col.book.title.toLowerCase() === formattedTitle
+    );
+    console.log(filteredResults);
+
+    res.status(200).json(filteredResults);
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: err });
@@ -90,7 +105,17 @@ const searchProximity = async (req, res) => {
 const searchByUser = async (req, res) => {
   const user_id = req.params.user_id;
   try {
-    const results = await Collection.showByUserId(user_id);
+    const collection = await Collection.showByUserId(user_id);
+
+    // console.log(collections);
+
+    const results = await Promise.all(
+      collection.map(async (col) => {
+        const book = await Book.findById(col.book_id);
+        const user = await User.findById(col.user_id);
+        return { ...col, book, user };
+      })
+    );
 
     res.status(200).json(results);
   } catch (err) {

@@ -5,6 +5,8 @@ DROP TABLE IF EXISTS messages;
 DROP TABLE IF EXISTS chat_rooms;
 DROP TABLE IF EXISTS swaps;
 DROP TABLE IF EXISTS book_collections;
+DROP TABLE IF EXISTS wishlists;
+DROP TABLE IF EXISTS books_ratings;
 
 CREATE TABLE users(
     user_id INT GENERATED ALWAYS AS IDENTITY,
@@ -38,28 +40,17 @@ CREATE TABLE books(
     PRIMARY KEY(book_id)
 );
 
-CREATE TABLE messages(
-    message_id INT GENERATED ALWAYS AS IDENTITY,
-    room_id INT,
-    user_sent INT,
-    message TEXT, 
-    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY(message_id),
-    FOREIGN KEY (room_id) REFERENCES chat_rooms(room_id),
-    FOREIGN KEY (user_sent) REFERENCES users(user_id)
-
+CREATE TABLE book_collections(
+    collection_id INT GENERATED ALWAYS AS IDENTITY,
+    book_id INT,
+    user_id INT,
+    condition TEXT,
+    delivery_preference TEXT[], 
+    PRIMARY KEY(collection_id),
+    FOREIGN KEY (book_id) REFERENCES books(book_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
-CREATE TABLE chat_rooms(
-    room_id INT GENERATED ALWAYS AS IDENTITY,
-    user_1 INT,
-    user_2 INT,
-    swap_id INT,     
-    PRIMARY KEY(room_id),
-    FOREIGN KEY (swap_id) REFERENCES swaps(swap_id),
-    FOREIGN KEY (user_1) REFERENCES users(user_id),
-    FOREIGN KEY (user_2) REFERENCES users(user_id)
-);
 
 CREATE TABLE swaps(
     swap_id INT GENERATED ALWAYS AS IDENTITY,
@@ -77,14 +68,47 @@ CREATE TABLE swaps(
     FOREIGN KEY (collection_offered) REFERENCES book_collections(collection_id)
 );
 
+CREATE TABLE chat_rooms(
+    room_id INT GENERATED ALWAYS AS IDENTITY,
+    user_1 INT,
+    user_2 INT,
+    swap_id INT,     
+    PRIMARY KEY(room_id),
+    FOREIGN KEY (swap_id) REFERENCES swaps(swap_id),
+    FOREIGN KEY (user_1) REFERENCES users(user_id),
+    FOREIGN KEY (user_2) REFERENCES users(user_id)
+);
 
-CREATE TABLE book_collections(
-    collection_id INT GENERATED ALWAYS AS IDENTITY,
-    book_id INT,
+CREATE TABLE messages(
+    message_id INT GENERATED ALWAYS AS IDENTITY,
+    room_id INT,
+    user_sent INT,
+    message TEXT, 
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (message_id),
+    FOREIGN KEY (room_id) REFERENCES chat_rooms(room_id),
+    FOREIGN KEY (user_sent) REFERENCES users(user_id)
+
+);
+
+
+
+CREATE TABLE wishlists(
+    wishlist_id INT GENERATED ALWAYS AS IDENTITY,
     user_id INT,
-    condition TEXT,
-    delivery_preference TEXT[], 
-    PRIMARY KEY(collection_id),
+    book_id INT,
+    radius FLOAT,
+    PRIMARY KEY(wishlist_id),
+    FOREIGN KEY (book_id) REFERENCES books(book_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE books_ratings(
+    ratings_id INT GENERATED ALWAYS AS IDENTITY,
+    user_id INT,
+    book_id INT,
+    rating INT,
+    PRIMARY KEY(ratings_id),
     FOREIGN KEY (book_id) REFERENCES books(book_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );

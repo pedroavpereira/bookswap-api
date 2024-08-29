@@ -47,21 +47,22 @@ class Collection {
 
   static async findTitleInsideRadius({ radius, lat, lng, title }) {
     const response = await db.query(
-      `SELECT 
-    bc.*,  
-    u.first_name, 
-    u.last_name,
-    b.*,  
-    ( 3959 * acos( 
-        cos( radians($1) ) * cos( radians(u.lat) ) * cos( radians(u.lng) - radians($2) ) 
-        + sin( radians($1) ) * sin( radians(u.lat) ) 
-    ) ) AS distance
-FROM book_collections bc
-JOIN user u ON bc.user_id = u.user_id  
-JOIN books b ON bc.book_id = b.book_id  
-HAVING distance <= $3 AND b.title LIKE $4  
-ORDER BY distance; `,
-      [lat, lng, radius, title]
+      `SELECT *
+FROM (
+    SELECT 
+        bc.*, 
+        b.title,
+        (3959 * acos(
+            cos(radians($1)) * cos(radians(u.lat)) * cos(radians(u.lng) - radians($2)) 
+            + sin(radians($1)) * sin(radians(u.lat))
+        )) AS distance
+    FROM book_collections bc
+    JOIN users u ON bc.user_id = u.user_id  
+    JOIN books b ON bc.book_id = b.book_id  
+) AS subquery
+WHERE distance <= $3
+ORDER BY distance;`,
+      [lat, lng, radius]
     );
 
     if (response.rows.length === 0) return [];
@@ -74,8 +75,6 @@ ORDER BY distance; `,
       "DELETE FROM book_collections WHERE collection_id = $1 RETURNING *",
       [this.collection_id]
     );
-
-    if (response.rows.length === 0) throw new Error("Error deleting");
 
     return new Collection(response.rows[0]);
   }
