@@ -6,12 +6,11 @@ const User = require("../models/User");
 
 const booksExternalApi = `https://www.googleapis.com/books/v1/`;
 
-const mockUser = 1;
-
 const create = async (req, res) => {
   const { condition, delivery_preference } = req.body;
   const isbn = parseInt(req.body.isbn);
   try {
+    const user_id = req.user_id;
     let book = await Book.findByISBN(isbn);
 
     let newCollection;
@@ -20,7 +19,7 @@ const create = async (req, res) => {
       newCollection = await Collection.create({
         book_id: book.book_id,
         condition,
-        user_id: mockUser, // CHANGE TO REAL USER
+        user_id,
         delivery_preference,
       });
     } else {
@@ -42,7 +41,7 @@ const create = async (req, res) => {
       });
       newCollection = await Collection.create({
         book_id: newBook.book_id,
-        user_id: mockUser, // CHANGE TO REAL USER
+        user_id,
         condition,
         delivery_preference,
       });
