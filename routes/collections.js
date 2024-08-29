@@ -6,7 +6,7 @@ const collectionsController = require("../controllers/collections");
 const collectionsRouter = Router();
 
 collectionsRouter.get("/search", collectionsController.searchProximity);
-collectionsRouter.get("/:collection_id", collectionsController.searchById);
+collectionsRouter.get("/id/:collection_id", collectionsController.searchById);
 collectionsRouter.get("/user/:user_id", collectionsController.searchByUser);
 
 collectionsRouter.use(authenticator);

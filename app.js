@@ -7,11 +7,13 @@ const reviewRouter = require("./routes/reviewRouter");
 const wishlistRouter = require("./routes/wishlistRouter");
 const roomsRouter = require("./routes/rooms");
 const bookRatingsRouter = require("./routes/bookRatingsRouter");
+const logger = require("./middleware/logger");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(logger);
 
 app.use("/swaps", swapsRouter);
 
