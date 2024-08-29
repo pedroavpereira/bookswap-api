@@ -67,7 +67,7 @@ ORDER BY distance;`,
 
     if (response.rows.length === 0) return [];
 
-    return response.rows.map((col) => new Collection(col));
+    return response.rows;
   }
 
   async destroy() {
