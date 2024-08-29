@@ -18,7 +18,7 @@ async function show(req, res) {
         res.status(200).json(wishlists);
     } catch (err) {
         console.error("Error fetching wishlists:", err);
-        res.status(404).json({ error: err.message || "Wishlists not found" });
+        res.status(404).json({ error: err.message || "Wishlists not found." });
     }
 }
 
