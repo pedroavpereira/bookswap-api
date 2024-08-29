@@ -1,9 +1,11 @@
 const db = require("../db/connect.js");
 
 class User {
-  constructor({ first_name, last_name }) {
+  constructor({ first_name, last_name, lat, lng }) {
     this.first_name = first_name;
     this.last_name = last_name;
+    this.lat = lat;
+    this.lng = lng;
   }
 
   static async findById(id) {
