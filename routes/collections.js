@@ -10,6 +10,7 @@ collectionsRouter.get("/:collection_id", collectionsController.searchById);
 collectionsRouter.get("/user/:user_id", collectionsController.searchByUser);
 
 collectionsRouter.use(authenticator);
+collectionsController.get("/mine", collectionsController.searchMine);
 collectionsRouter.post("/", collectionsController.create);
 collectionsRouter.delete("/:id", collectionsController.destroy);
 

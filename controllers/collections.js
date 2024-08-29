@@ -137,4 +137,33 @@ const searchByUser = async (req, res) => {
   }
 };
 
-module.exports = { create, searchProximity, destroy, searchByUser, searchById };
+const searchMine = async (req, res) => {
+  const user_id = req.user_id;
+  try {
+    const collection = await Collection.showByUserId(user_id);
+
+    // console.log(collections);
+
+    const results = await Promise.all(
+      collection.map(async (col) => {
+        const book = await Book.findById(col.book_id);
+        const user = await User.findById(col.user_id);
+        return { ...col, book, user };
+      })
+    );
+
+    res.status(200).json(results);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: err });
+  }
+};
+
+module.exports = {
+  create,
+  searchProximity,
+  destroy,
+  searchByUser,
+  searchById,
+  searchMine,
+};
