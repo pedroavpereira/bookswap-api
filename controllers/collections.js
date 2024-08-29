@@ -11,6 +11,7 @@ const create = async (req, res) => {
   const isbn = parseInt(req.body.isbn);
   try {
     const user_id = req.user_id;
+    console.log(user_id);
     let book = await Book.findByISBN(isbn);
 
     let newCollection;

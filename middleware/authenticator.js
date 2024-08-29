@@ -7,8 +7,7 @@ const authenticator = async (req, res, next) => {
       `${process.env.AUTH_API_URL}/validate-token`,
       { headers: { authorization: req.headers.authorization } }
     );
-    console.log("After Authenticator axios");
-    req.user_id = response.data.user_id;
+    req.user_id = response.data.user.user_id;
     next();
   } catch (err) {
     console.log(err);

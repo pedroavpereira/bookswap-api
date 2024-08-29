@@ -15,6 +15,7 @@ class Collection {
   }
 
   static async create({ book_id, user_id, condition, delivery_preference }) {
+    console.log(user_id);
     const response = await db.query(
       "INSERT INTO book_collections (book_id, user_id, condition, delivery_preference) VALUES ($1 , $2 , $3, $4) RETURNING *",
       [book_id, user_id, condition, delivery_preference]
