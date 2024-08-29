@@ -30,7 +30,7 @@ class Room {
     return new Room(response.rows[0]);
   }
 
-  static async createRoom({ user_1, user_2, swap_id }) {
+  static async create({ user_1, user_2, swap_id }) {
     const response = await db.query(
       "INSERT into chat_rooms (user_1 , user_2, swap) VALUES ($1, $2) RETURNING *;",
       [user_1, user_2, swap_id]
