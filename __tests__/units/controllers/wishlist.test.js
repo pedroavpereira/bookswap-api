@@ -82,32 +82,32 @@ describe('Wishlist controller', () => {
 
 
 
-//   describe ('destroy', () => {
-//     it('should return a 204 status code on successful deletion', async () => {
-//       const testGoat = { id: 1, name: 'Test Goat', age: 22 };
-//       const mockReq = { params: { id: '1' } };
+  describe ('destroy', () => {
+    it('should return a 204 status when wishlist has been deleted', async () => {
+      const testWishlist = {wishlist_id:1, user_id: 1, book_id: 4, radius: 2.5 };
+      const mockReq = { params: { wishlist_id: '1' } };
 
-//       jest.spyOn(Goat, 'findById').mockResolvedValue(new Goat(testGoat));
-//       jest.spyOn(Goat.prototype, 'destroy').mockResolvedValue();
+      jest.spyOn(Wishlist, 'findByWishlistId').mockResolvedValue(new Wishlist(testWishlist));
+      jest.spyOn(Wishlist.prototype, 'destroy').mockResolvedValue();
 
-//       await goatsController.destroy(mockReq, mockRes);
+      await wishlistController.destroy(mockReq, mockRes);
 
-//       expect(Goat.findById).toHaveBeenCalledWith(1);
-//       expect(Goat.prototype.destroy).toHaveBeenCalledTimes(1);
-//       expect(mockStatus).toHaveBeenCalledWith(204);
-//       expect(mockEnd).toHaveBeenCalled();
-//     });
+      expect(Wishlist.findByWishlistId).toHaveBeenCalledWith(1);
+      expect(Wishlist.prototype.destroy).toHaveBeenCalledTimes(1);
+      expect(mockStatus).toHaveBeenCalledWith(204);
+      expect(mockEnd).toHaveBeenCalled();
+    });
 
-//     it('should return an error if the goat is not found', async () => {
-//       const mockReq = { params: { id: '49' } };
+    // it('should return an error if the goat is not found', async () => {
+    //   const mockReq = { params: { wishlist_id: '49' } };
 
-//       jest.spyOn(Goat, 'findById').mockRejectedValue(new Error('Goat not found'));
+    //   jest.spyOn(Wishlist, 'findByWishlistId').mockRejectedValue(new Error('Wishlist not found'));
 
-//       await goatsController.destroy(mockReq, mockRes);
+    //   await goatsController.destroy(mockReq, mockRes);
 
-//       expect(Goat.findById).toHaveBeenCalledWith(49);
-//       expect(mockStatus).toHaveBeenCalledWith(404);
-//       expect(mockSend).toHaveBeenCalledWith({ error: 'Goat not found' });
-//     });
-//   })
+    //   expect(Wishlist.findById).toHaveBeenCalledWith(49);
+    //   expect(mockStatus).toHaveBeenCalledWith(404);
+    //   expect(mockSend).toHaveBeenCalledWith({ error: 'Wishlist not found' });
+    // });
+  })
 })
