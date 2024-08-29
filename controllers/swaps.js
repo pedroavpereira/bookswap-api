@@ -2,6 +2,18 @@ const Collection = require("../models/Collection");
 const Room = require("../models/Room");
 const Swap = require("../models/Swap");
 
+const showMine = async (req, res) => {
+  try {
+    const user_id = req.user_id;
+
+    const swaps = await Swap.findByUserId(user_id);
+
+    res.status(200).json(swaps);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 const create = async (req, res) => {
   try {
     const { collection_id } = req.body;
@@ -88,4 +100,4 @@ const destroy = async (req, res) => {
   }
 };
 
-module.exports = { create, accept, reject, complete, destroy };
+module.exports = { create, accept, reject, complete, destroy, showMine };
