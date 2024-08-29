@@ -18,6 +18,13 @@ const mockRes = { status: mockStatus };
 
 describe('Wishlist controller', () => {
   beforeEach(() => jest.clearAllMocks())
+  beforeAll(() => {
+    jest.spyOn(global.console, 'error').mockImplementation(() => {});
+  });
+
+  afterAll(() => {
+    global.console.error.mockRestore();
+  })
 
   afterAll(() => jest.resetAllMocks())
 
@@ -70,13 +77,14 @@ describe('Wishlist controller', () => {
       let testWishlist = {book_id: 3, radius: 9.5 }
       const mockReq = { body: testWishlist }
 
-      jest.spyOn(Wishlist, 'create').mockRejectedValue(new Error('oh no'))
+      jest.spyOn(Wishlist, 'create').mockRejectedValue(new Error('oh no'||'Unknown error'))
 
       await wishlistController.create(mockReq, mockRes)
       
       expect(Wishlist.create).toHaveBeenCalledTimes(1)
       expect(mockStatus).toHaveBeenCalledWith(400)
-      expect(mockJson).toHaveBeenCalledWith({ error: 'oh no' })
+      expect(mockJson).toHaveBeenCalledWith({ error: 'oh no' || 'Unknown error'})
+      expect(console.error).toHaveBeenCalledTimes(1)
     })
   })
 
@@ -98,16 +106,16 @@ describe('Wishlist controller', () => {
       expect(mockEnd).toHaveBeenCalled();
     });
 
-    // it('should return an error if the goat is not found', async () => {
-    //   const mockReq = { params: { wishlist_id: '49' } };
+    it('should return an error if the wishlist is not found', async () => {
+      const mockReq = { params: { wishlist_id: '49' } };
 
-    //   jest.spyOn(Wishlist, 'findByWishlistId').mockRejectedValue(new Error('Wishlist not found'));
+      jest.spyOn(Wishlist, 'findByWishlistId').mockRejectedValue(new Error('Wishlist not found'));
 
-    //   await goatsController.destroy(mockReq, mockRes);
+      await wishlistController.destroy(mockReq, mockRes);
 
-    //   expect(Wishlist.findById).toHaveBeenCalledWith(49);
-    //   expect(mockStatus).toHaveBeenCalledWith(404);
-    //   expect(mockSend).toHaveBeenCalledWith({ error: 'Wishlist not found' });
-    // });
+      expect(Wishlist.findByWishlistId).toHaveBeenCalledWith(49);
+      expect(mockStatus).toHaveBeenCalledWith(404);
+      expect(mockJson).toHaveBeenCalledWith({ error: 'Wishlist not found' });
+    });
   })
 })
