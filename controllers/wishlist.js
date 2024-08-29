@@ -14,11 +14,10 @@ async function create(req, res) {
     let newWishlist;
 
     if (book) {
-      newWishlist = await Collection.create({
+      newWishlist = await Wishlist.create({
         book_id: book.book_id,
-        condition,
+        radius,
         user_id,
-        delivery_preference,
       });
     } else {
       const externalBook = await axios.get(
