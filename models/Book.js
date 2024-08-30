@@ -24,7 +24,7 @@ class Book {
 
   static async findById(id) {
     const response = await db.query("SELECT * FROM books WHERE book_id = $1;", [
-      id
+      id,
     ]);
     if (response.rows.length != 1) {
       return null;
