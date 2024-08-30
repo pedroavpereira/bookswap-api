@@ -20,4 +20,4 @@ const showBySwap = async (req, res) => {
   }
 };
 
-module.exports = { index };
+module.exports = { index, showBySwap };
