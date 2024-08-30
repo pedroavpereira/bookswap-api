@@ -11,7 +11,6 @@ const create = async (req, res) => {
   const isbn = parseInt(req.body.isbn);
   try {
     const user_id = req.user_id;
-    console.log(user_id);
     let book = await Book.findByISBN(isbn);
 
     let newCollection;
@@ -41,7 +40,7 @@ const create = async (req, res) => {
         image: bookData.volumeInfo.imageLinks.thumbnail,
       });
       newCollection = await Collection.create({
-        book_id: newBook.book_id,
+        book_id: book.book_id,
         user_id,
         condition,
         delivery_preference,
