@@ -1,6 +1,8 @@
+const Book = require("../models/Book");
 const Collection = require("../models/Collection");
 const Room = require("../models/Room");
 const Swap = require("../models/Swap");
+const User = require("../models/User");
 
 const showMine = async (req, res) => {
   try {
@@ -8,7 +10,45 @@ const showMine = async (req, res) => {
 
     const swaps = await Swap.findByUserId(user_id);
 
-    res.status(200).json(swaps);
+    const searchResults = await Promise.all(
+      swaps.map(async (swap) => {
+        const collectionRequested = await Collection.findById(
+          swap.collection_requested
+        );
+        const bookRequested = await Book.findById(collectionRequested.book_id);
+        const userRequested = await User.findById(swap.user_requesting);
+        const userOffered = await User.findById(swap.user_offered);
+
+        if (swap.collection_offered) {
+          const collectionOffered = await Collection.findById(
+            swap.collection_offered
+          );
+          const bookOffered = await Book.findById(collectionRequested.book_id);
+
+          return {
+            ...swap,
+            collectionRequested,
+            bookRequested,
+            collectionOffered,
+            bookOffered,
+            userRequested,
+            userOffered,
+          };
+        } else {
+          return {
+            ...swap,
+            collectionRequested,
+            bookRequested,
+            userRequested,
+            userOffered,
+            collectionOffered: null,
+            bookOffered: null,
+          };
+        }
+      })
+    );
+
+    res.status(200).json(searchResults);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -20,7 +60,7 @@ const create = async (req, res) => {
     const collection = await Collection.findById(collection_id);
 
     const newSwap = await Swap.create({
-      user_requesting: req.user,
+      user_requesting: req.user_id,
       collection_requested: collection.collection_id,
       user_offered: collection.user_id,
     });
@@ -61,6 +101,7 @@ const reject = async (req, res) => {
     const rejectedSwap = await Swap.update(swap_id, {
       collection_offered: null,
       status: "rejected",
+      completed: true,
     });
 
     res.status(200).json(rejectedSwap);
@@ -77,7 +118,8 @@ const complete = async (req, res) => {
 
     const completedSwap = await Swap.update(swap_id, {
       collection_offered: currentSwap.collection_offered,
-      status: "completed",
+      status: currentSwap.status,
+      completed: true,
     });
 
     res.status(200).json(completedSwap);
