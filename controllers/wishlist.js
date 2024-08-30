@@ -1,6 +1,9 @@
 const Wishlist = require("../models/Wishlist");
 const Book = require("../models/Book");
+<<<<<<< Updated upstream
 const axios = require("axios");
+=======
+>>>>>>> Stashed changes
 
 const booksExternalApi = `https://www.googleapis.com/books/v1/`;
 
@@ -15,10 +18,18 @@ async function create(req, res) {
     let newWishlist;
 
     if (book) {
+<<<<<<< Updated upstream
       newWishlist = await Wishlist.create({
         book_id: book.book_id,
         radius,
         user_id,
+=======
+      newWishlist = await Collection.create({
+        book_id: book.book_id,
+        condition,
+        user_id,
+        delivery_preference,
+>>>>>>> Stashed changes
       });
     } else {
       const externalBook = await axios.get(

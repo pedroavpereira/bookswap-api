@@ -10,4 +10,14 @@ const index = async (req, res) => {
   }
 };
 
+const showBySwap = async (req, res) => {
+  try {
+    const { swap_id } = req.params;
+    const rooms = await Room.getRoomBySwapId(user_id);
+    res.status(200).json(rooms);
+  } catch (err) {
+    res.status(404).json({ error: err });
+  }
+};
+
 module.exports = { index };

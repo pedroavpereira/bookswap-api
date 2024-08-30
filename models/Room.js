@@ -19,6 +19,17 @@ class Room {
     return new Room(response.rows[0]);
   }
 
+  static async getRoomBySwapId(swap_id) {
+    const response = await db.query(
+      "SELECT * FROM chat_rooms WHERE swap_id = $1",
+      [swap_id]
+    );
+
+    if (response.rows.length === 0) return [];
+
+    return new Room(response.rows[0]);
+  }
+
   static async getRooms(user_id) {
     const response = await db.query(
       "SELECT * FROM chat_rooms WHERE (user_1 = $1 OR user_2 = $1)",
