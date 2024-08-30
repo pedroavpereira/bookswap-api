@@ -1,6 +1,6 @@
 const Wishlist = require("../models/Wishlist");
 const Book = require("../models/Book");
-const { default: axios } = require("axios");
+const axios = require("axios");
 
 const booksExternalApi = `https://www.googleapis.com/books/v1/`;
 
