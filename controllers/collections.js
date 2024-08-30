@@ -32,7 +32,7 @@ const create = async (req, res) => {
 
       bookData = externalBook.data.items[0];
 
-      const newBook = await Book.create({
+      book = await Book.create({
         title: bookData.volumeInfo.title,
         authors: bookData.volumeInfo.authors,
         categories: bookData.volumeInfo.categories,
@@ -48,7 +48,7 @@ const create = async (req, res) => {
       });
     }
 
-    res.status(201).json(newCollection);
+    res.status(201).json({ ...newCollection, book });
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: err.message });
