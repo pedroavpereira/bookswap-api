@@ -10,4 +10,14 @@ const index = async (req, res) => {
   }
 };
 
-module.exports = { index };
+const showSwap = async (req, res) => {
+  try {
+    const { swaps_id } = req.params;
+    const room = await Room.getRooms(swaps_id);
+    res.status(200).json(room);
+  } catch (err) {
+    res.status(404).json({ error: err });
+  }
+};
+
+module.exports = { index, showSwap };

@@ -8,5 +8,6 @@ const roomsRouter = Router();
 roomsRouter.use(authenticator);
 
 roomsRouter.get("/", roomsController.index);
+roomsRouter.get("/swap/:swap_id", roomsController.showSwap);
 
 module.exports = roomsRouter;
