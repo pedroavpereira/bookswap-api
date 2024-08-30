@@ -2,6 +2,7 @@ const Book = require("../models/Book");
 const Collection = require("../models/Collection");
 const Room = require("../models/Room");
 const Swap = require("../models/Swap");
+const User = require("../models/User");
 
 const showMine = async (req, res) => {
   try {
