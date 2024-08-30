@@ -1,3 +1,4 @@
+const Book = require("../models/Book");
 const Collection = require("../models/Collection");
 const Room = require("../models/Room");
 const Swap = require("../models/Swap");
@@ -8,7 +9,39 @@ const showMine = async (req, res) => {
 
     const swaps = await Swap.findByUserId(user_id);
 
-    res.status(200).json(swaps);
+    const searchResults = await Promise.all(
+      swaps.map(async (swap) => {
+        const collectionRequested = await Collection.findById(
+          swap.collection_requested
+        );
+        const bookRequested = await Book.findById(collectionRequested.book_id);
+
+        if (swap.collection_offered) {
+          const collectionOffered = await Collection.findById(
+            swap.collection_offered
+          );
+          const bookOffered = await Book.findById(collectionRequested.book_id);
+
+          return {
+            ...swap,
+            collectionRequested,
+            bookRequested,
+            collectionOffered,
+            bookOffered,
+          };
+        } else {
+          return {
+            ...swap,
+            collectionRequested,
+            bookRequested,
+            collectionOffered: null,
+            bookOffered: null,
+          };
+        }
+      })
+    );
+
+    res.status(200).json(searchResults);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
