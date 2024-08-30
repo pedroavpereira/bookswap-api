@@ -32,10 +32,13 @@ class Swap {
     return new Swap(result.rows[0]);
   }
 
-  static async update(swap_id, { collection_offered, status }) {
+  static async update(
+    swap_id,
+    { collection_offered, status, completed = false }
+  ) {
     const result = await db.query(
-      `UPDATE swaps SET collection_offered = $1, status = $2 WHERE swap_id = $3 RETURNING *`,
-      [collection_offered, status, swap_id]
+      `UPDATE swaps SET collection_offered = $1, status = $2, completed = $3 WHERE swap_id = $4 RETURNING *`,
+      [collection_offered, status, completed, swap_id]
     );
     return new Swap(result.rows[0]);
   }
