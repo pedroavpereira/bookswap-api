@@ -20,7 +20,7 @@ const create = async (req, res) => {
     const collection = await Collection.findById(collection_id);
 
     const newSwap = await Swap.create({
-      user_requesting: req.user,
+      user_requesting: req.user_id,
       collection_requested: collection.collection_id,
       user_offered: collection.user_id,
     });
@@ -61,6 +61,7 @@ const reject = async (req, res) => {
     const rejectedSwap = await Swap.update(swap_id, {
       collection_offered: null,
       status: "rejected",
+      completed: true,
     });
 
     res.status(200).json(rejectedSwap);
@@ -77,7 +78,8 @@ const complete = async (req, res) => {
 
     const completedSwap = await Swap.update(swap_id, {
       collection_offered: currentSwap.collection_offered,
-      status: "completed",
+      status: currentSwap.status,
+      completed: true,
     });
 
     res.status(200).json(completedSwap);
