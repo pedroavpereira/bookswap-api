@@ -15,6 +15,8 @@ const showMine = async (req, res) => {
           swap.collection_requested
         );
         const bookRequested = await Book.findById(collectionRequested.book_id);
+        const userRequested = await User.findById(swap.user_requesting);
+        const userOffered = await User.findById(swap.user_offered);
 
         if (swap.collection_offered) {
           const collectionOffered = await Collection.findById(
@@ -28,12 +30,16 @@ const showMine = async (req, res) => {
             bookRequested,
             collectionOffered,
             bookOffered,
+            userRequested,
+            userOffered,
           };
         } else {
           return {
             ...swap,
             collectionRequested,
             bookRequested,
+            userRequested,
+            userOffered,
             collectionOffered: null,
             bookOffered: null,
           };
