@@ -56,7 +56,14 @@ async function show(req, res) {
   try {
     const userId = parseInt(req.params.user_id);
     const wishlists = await Wishlist.findByUserId(userId);
-    res.status(200).json(wishlists);
+
+    const populatedResults = await Promise.all(
+      wishlists.map(async (wish) => {
+        const book = await Book.findById(wish.book_id);
+        return { ...wish, book };
+      })
+    );
+    res.status(200).json(populatedResults);
   } catch (err) {
     console.error("Error fetching wishlists:", err);
     res.status(404).json({ error: err.message || "Wishlists not found." });
@@ -67,7 +74,15 @@ async function showMine(req, res) {
   try {
     const userId = req.user_id;
     const wishlists = await Wishlist.findByUserId(userId);
-    res.status(200).json(wishlists);
+
+    const populatedResults = await Promise.all(
+      wishlists.map(async (wish) => {
+        const book = await Book.findById(wish.book_id);
+        return { ...wish, book };
+      })
+    );
+
+    res.status(200).json(populatedResults);
   } catch (err) {
     console.error("Error fetching wishlists:", err);
     res.status(404).json({ error: err.message || "Wishlists not found." });
