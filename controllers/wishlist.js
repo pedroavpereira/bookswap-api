@@ -1,7 +1,10 @@
 const Wishlist = require("../models/Wishlist");
 const Book = require("../models/Book");
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 const axios = require("axios");
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 
@@ -19,16 +22,22 @@ async function create(req, res) {
 
     if (book) {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       newWishlist = await Wishlist.create({
         book_id: book.book_id,
         radius,
         user_id,
 =======
+=======
+>>>>>>> Stashed changes
       newWishlist = await Collection.create({
         book_id: book.book_id,
         condition,
         user_id,
         delivery_preference,
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
       });
     } else {
@@ -68,6 +77,7 @@ async function show(req, res) {
     const userId = parseInt(req.params.user_id);
     const wishlists = await Wishlist.findByUserId(userId);
 
+
     const populatedResults = await Promise.all(
       wishlists.map(async (wish) => {
         const book = await Book.findById(wish.book_id);
@@ -94,6 +104,9 @@ async function showMine(req, res) {
     );
 
     res.status(200).json(populatedResults);
+=======
+    res.status(200).json(wishlists);
+>>>>>>> Stashed changes
   } catch (err) {
     console.error("Error fetching wishlists:", err);
     res.status(404).json({ error: err.message || "Wishlists not found." });
