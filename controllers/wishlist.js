@@ -1,5 +1,6 @@
 const Wishlist = require("../models/Wishlist");
 const Book = require("../models/Book");
+const axios = require("axios");
 
 const booksExternalApi = `https://www.googleapis.com/books/v1/`;
 
@@ -60,7 +61,6 @@ async function show(req, res) {
     console.error("Error fetching wishlists:", err);
     res.status(404).json({ error: err.message || "Wishlists not found." });
   }
-<<<<<<< Updated upstream
 }
 
 async function showMine(req, res) {
@@ -72,8 +72,6 @@ async function showMine(req, res) {
     console.error("Error fetching wishlists:", err);
     res.status(404).json({ error: err.message || "Wishlists not found." });
   }
-=======
->>>>>>> Stashed changes
 }
 
 async function destroy(req, res) {
