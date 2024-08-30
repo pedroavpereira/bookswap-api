@@ -20,7 +20,7 @@ const create = async (req, res) => {
     const collection = await Collection.findById(collection_id);
 
     const newSwap = await Swap.create({
-      user_requesting: req.user,
+      user_requesting: req.user_id,
       collection_requested: collection.collection_id,
       user_offered: collection.user_id,
     });
