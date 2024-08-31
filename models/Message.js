@@ -30,8 +30,9 @@ class Message {
   }
 
   static async createMessage({ room_id, user_sent, message }) {
+    console.log(room_id, user_sent, message);
     const response = await db.query(
-      "INSERT INTO messages (room_id, user_sent, message) VALUES ($1, $2, $3);",
+      "INSERT INTO messages (room_id, user_sent, message) VALUES ($1, $2, $3) RETURNING *;",
       [room_id, user_sent, message]
     );
 

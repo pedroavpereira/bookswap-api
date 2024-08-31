@@ -41,13 +41,17 @@ io.on("connection", async (socket) => {
   });
 
   socket.on("send_message", async (data) => {
-    const { room, user_sent, message } = data;
-    const newMessage = await Message.createMessage({
-      room_id: room,
-      user_sent,
-      message,
-    });
-    socket.to(room).emit("receive_message", data);
+    try {
+      const { room_id, user_sent, message } = data;
+      const newMessage = await Message.createMessage({
+        room_id: room_id,
+        user_sent,
+        message,
+      });
+      socket.to(room_id).emit("receive_message", newMessage);
+    } catch (err) {
+      console.log(err);
+    }
   });
 
   socket.on("disconnect", () => {
