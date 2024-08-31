@@ -18,7 +18,7 @@ const io = new Server(server, {
 io.on("connection", async (socket) => {
   console.log(`User Connected: ${socket.id}`);
 
-  socket.on("join_room", async ({ room, username }) => {
+  socket.on("join_room", async ({ room, user }) => {
     const roomDB = await Room.getRoom(parseInt(room));
 
     if (!roomDB) {
@@ -27,7 +27,7 @@ io.on("connection", async (socket) => {
       return;
     }
 
-    if (username !== roomDB.username_1 && username !== roomDB.username_2) {
+    if (user !== roomDB.user_1 && user !== roomDB.user_2) {
       socket.emit("unauthorized");
       socket.disconnect(true);
       return;
