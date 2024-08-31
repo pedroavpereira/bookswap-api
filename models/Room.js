@@ -38,7 +38,7 @@ class Room {
 
     if (response.rows.length === 0) return [];
 
-    return new Room(response.rows[0]);
+    return response.rows.map((room) => new Room(room));
   }
 
   static async create({ user_1, user_2, swap_id }) {
