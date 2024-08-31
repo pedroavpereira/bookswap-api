@@ -24,6 +24,8 @@ class Message {
       [room_id]
     );
 
+    if (response.rows.length === 0) return null;
+
     return new Message(response.rows[0]);
   }
 
