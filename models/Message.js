@@ -18,6 +18,15 @@ class Message {
     return response.rows.map((msg) => new Message(msg));
   }
 
+  static async findLast(room_id) {
+    const response = await db.query(
+      "SELECT * FROM message WHERE room_id = $1 ORDER BY sent_at LIMIT 1;",
+      [room_id]
+    );
+
+    return new Message(response.rows[0]);
+  }
+
   static async createMessage({ room_id, user_sent, message }) {
     const response = await db.query(
       "INSERT INTO message (room_id, author, message) VALUES ($1, $2, $3);",
