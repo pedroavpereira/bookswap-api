@@ -11,7 +11,7 @@ class Message {
 
   static async getMessages(room_id) {
     const response = await db.query(
-      "SELECT * FROM message WHERE room_id = $1;",
+      "SELECT * FROM messages WHERE room_id = $1;",
       [room_id]
     );
 
@@ -20,7 +20,7 @@ class Message {
 
   static async findLast(room_id) {
     const response = await db.query(
-      "SELECT * FROM message WHERE room_id = $1 ORDER BY sent_at LIMIT 1;",
+      "SELECT * FROM messages WHERE room_id = $1 ORDER BY sent_at LIMIT 1;",
       [room_id]
     );
 
@@ -29,7 +29,7 @@ class Message {
 
   static async createMessage({ room_id, user_sent, message }) {
     const response = await db.query(
-      "INSERT INTO message (room_id, author, message) VALUES ($1, $2, $3);",
+      "INSERT INTO messages (room_id, user_sent, message) VALUES ($1, $2, $3);",
       [room_id, user_sent, message]
     );
 
