@@ -30,10 +30,18 @@ class Message {
   }
 
   static async createMessage({ room_id, user_sent, message }) {
-    console.log(room_id, user_sent, message);
     const response = await db.query(
       "INSERT INTO messages (room_id, user_sent, message) VALUES ($1, $2, $3) RETURNING *;",
       [room_id, user_sent, message]
+    );
+
+    return new Message(response.rows[0]);
+  }
+
+  static async markAsRead({ user_id, room_id }) {
+    const response = await db.query(
+      "UPDATE messages SET read = TRUE WHERE room_id = $1 && user_sent IS NOT $2 RETURNING *;",
+      [room_id, user_id]
     );
 
     return new Message(response.rows[0]);
