@@ -1,12 +1,13 @@
 const db = require("../db/connect");
 
 class Message {
-  constructor({ message_id, room_id, user_sent, message, sent_at }) {
+  constructor({ message_id, room_id, user_sent, message, sent_at, read }) {
     this.message_id = message_id;
     this.room_id = room_id;
     this.user_sent = user_sent;
     this.message = message;
     this.sent_at = sent_at;
+    this.read = read;
   }
 
   static async getMessages(room_id) {
