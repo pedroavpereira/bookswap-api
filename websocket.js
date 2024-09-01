@@ -23,17 +23,11 @@ io.on("connection", async (socket) => {
   console.log(`User Connected: ${socket.id}`);
   const userId = socket.handshake.query.userId;
 
-  console.log("test");
-
-  console.log(userId);
-
   if (userId) {
     socketToUserMap.set(socket.id, userId);
 
     userToSocketMap.set(userId, socket.id);
 
-    console.log(userToSocketMap);
-    console.log(socketToUserMap);
     socket.join("online");
   }
 
@@ -55,8 +49,6 @@ io.on("connection", async (socket) => {
     const messages = await Message.getMessages(room);
     socket.join(room);
     socket.emit("receive_messages", messages);
-
-    console.log(`User with ID: ${socket.id} joined room: ${room}`);
   });
 
   socket.on("send_message", async (data) => {
@@ -68,9 +60,12 @@ io.on("connection", async (socket) => {
         user_sent,
         message,
       });
-      const user = User.findById(user_sent);
+      const user = await User.findById(user_sent);
       socket.to(room_id).emit("receive_message", newMessage);
-      io.to(socketId).emit("pinged", { ...newMessage, user });
+
+      if (socketId) {
+        io.to(socketId).emit("pinged", { ...newMessage, user });
+      }
     } catch (err) {
       console.log(err);
     }

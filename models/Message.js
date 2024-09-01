@@ -21,7 +21,7 @@ class Message {
 
   static async findLast(room_id) {
     const response = await db.query(
-      "SELECT * FROM messages WHERE room_id = $1 ORDER BY sent_at LIMIT 1;",
+      "SELECT * FROM messages WHERE room_id = $1 ORDER BY sent_at DESC LIMIT 1;",
       [room_id]
     );
 
