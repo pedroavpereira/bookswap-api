@@ -45,7 +45,7 @@ class Message {
       [room_id, user_id]
     );
 
-    return new Message(response.rows[0]);
+    return response.rows.map((msg) => new Message(msg));
   }
 }
 

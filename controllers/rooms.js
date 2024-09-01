@@ -42,6 +42,7 @@ const showSwap = async (req, res) => {
 
 const showRoom = async (req, res) => {
   try {
+    const user_id = req.user_id;
     const { room_id } = req.params;
     const room = await Room.getRoom(room_id);
 
@@ -50,8 +51,9 @@ const showRoom = async (req, res) => {
       +user_id === room.user_1 ? room.user_2 : room.user_1
     );
 
-    res.status(200).json(...room, last_message, user);
+    res.status(200).json({ ...room, last_message, user });
   } catch (err) {
+    console.log(err);
     res.status(404).json({ error: err });
   }
 };
