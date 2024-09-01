@@ -15,8 +15,26 @@ const io = new Server(server, {
   },
 });
 
+const userToSocketMap = new Map();
+const socketToUserMap = new Map();
+
 io.on("connection", async (socket) => {
   console.log(`User Connected: ${socket.id}`);
+  const userId = socket.handshake.query.userId;
+
+  console.log("test");
+
+  console.log(userId);
+
+  if (userId) {
+    socketToUserMap.set(socket.id, userId);
+
+    userToSocketMap.set(userId, socket.id);
+
+    console.log(userToSocketMap);
+    console.log(socketToUserMap);
+    socket.join("online");
+  }
 
   socket.on("join_room", async ({ room, user }) => {
     const roomDB = await Room.getRoom(parseInt(room));
@@ -42,20 +60,35 @@ io.on("connection", async (socket) => {
 
   socket.on("send_message", async (data) => {
     try {
-      const { room_id, user_sent, message } = data;
+      const { room_id, user_sent, message, user_receiver } = data;
+      console.log(user_receiver, typeof user_receiver);
+      const socketId = userToSocketMap.get(user_receiver.toString());
       const newMessage = await Message.createMessage({
-        room_id: room_id,
+        room_id,
         user_sent,
         message,
       });
       socket.to(room_id).emit("receive_message", newMessage);
+      console.log("socket", socketId);
+      io.to(socketId).emit("pinged", newMessage);
     } catch (err) {
       console.log(err);
     }
   });
 
+  socket.on("leave_room", ({ room }) => {
+    socket.leave(room);
+  });
+
   socket.on("disconnect", () => {
     console.log("User Disconnected", socket.id);
+
+    const userId = socketToUserMap.get(socket.id);
+
+    if (userId) {
+      socketToUserMap.delete(socket.id);
+      userToSocketMap.delete(userId);
+    }
   });
 });
 
