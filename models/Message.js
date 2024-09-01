@@ -41,7 +41,7 @@ class Message {
 
   static async markAsRead({ user_id, room_id }) {
     const response = await db.query(
-      "UPDATE messages SET read = TRUE WHERE room_id = $1 && user_sent IS NOT $2 RETURNING *;",
+      "UPDATE messages SET read = TRUE WHERE room_id = $1 AND user_sent <> $2 RETURNING *;",
       [room_id, user_id]
     );
 
