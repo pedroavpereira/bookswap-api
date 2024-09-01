@@ -5,6 +5,7 @@ const app = require("./app");
 
 const Room = require("./models/Room");
 const Message = require("./models/Message");
+const User = require("./models/User");
 
 const server = http.createServer(app);
 
@@ -61,16 +62,15 @@ io.on("connection", async (socket) => {
   socket.on("send_message", async (data) => {
     try {
       const { room_id, user_sent, message, user_receiver } = data;
-      console.log(user_receiver, typeof user_receiver);
       const socketId = userToSocketMap.get(user_receiver.toString());
       const newMessage = await Message.createMessage({
         room_id,
         user_sent,
         message,
       });
+      const user = User.findById(user_sent);
       socket.to(room_id).emit("receive_message", newMessage);
-      console.log("socket", socketId);
-      io.to(socketId).emit("pinged", newMessage);
+      io.to(socketId).emit("pinged", { ...newMessage, user });
     } catch (err) {
       console.log(err);
     }
