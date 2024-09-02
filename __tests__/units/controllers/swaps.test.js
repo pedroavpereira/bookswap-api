@@ -5,7 +5,7 @@ const Room = require('../../../models/Room')
 const Book = require('../../../models/Book')
 const User = require('../../../models/User')
 
-
+// Create test cases for Swaps controller.
 describe('swaps Controller', () => {
     beforeEach(() => jest.clearAllMocks())
 
