@@ -85,6 +85,7 @@ CREATE TABLE messages(
     user_sent INT,
     message TEXT, 
     sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    read BOOLEAN DEFAULT FALSE,
     PRIMARY KEY (message_id),
     FOREIGN KEY (room_id) REFERENCES chat_rooms(room_id),
     FOREIGN KEY (user_sent) REFERENCES users(user_id)
