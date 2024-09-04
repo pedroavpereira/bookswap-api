@@ -3,6 +3,7 @@ const axios = require("axios");
 const Collection = require("../models/Collection");
 const Book = require("../models/Book");
 const User = require("../models/User");
+const { mailer } = require("../utils/emailer");
 
 const booksExternalApi = `https://www.googleapis.com/books/v1/`;
 
@@ -47,6 +48,7 @@ const create = async (req, res) => {
       });
     }
 
+    mailer({ user_id: req.user_id, title: book.title });
     res.status(201).json({ ...newCollection, book });
   } catch (err) {
     console.log(err);
