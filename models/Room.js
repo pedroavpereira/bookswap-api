@@ -9,9 +9,21 @@ class Room {
   }
 
   static async getRoom(room_id) {
-    const response = await db.query("SELECT * FROM rooms WHERE room_id = $1", [
-      room_id,
-    ]);
+    const response = await db.query(
+      "SELECT * FROM chat_rooms WHERE room_id = $1",
+      [room_id]
+    );
+
+    if (response.rows.length === 0) return null;
+
+    return new Room(response.rows[0]);
+  }
+
+  static async getRoomBySwapId(swap_id) {
+    const response = await db.query(
+      "SELECT * FROM chat_rooms WHERE swap_id = $1",
+      [swap_id]
+    );
 
     if (response.rows.length === 0) return null;
 
@@ -20,18 +32,18 @@ class Room {
 
   static async getRooms(user_id) {
     const response = await db.query(
-      "SELECT * FROM rooms WHERE (user_1 = $1 OR user_2 = $1) AND closed = false ",
+      "SELECT * FROM chat_rooms WHERE (user_1 = $1 OR user_2 = $1)",
       [user_id]
     );
 
     if (response.rows.length === 0) return [];
 
-    return new Room(response.rows[0]);
+    return response.rows.map((room) => new Room(room));
   }
 
-  static async createRoom({ user_1, user_2, swap_id }) {
+  static async create({ user_1, user_2, swap_id }) {
     const response = await db.query(
-      "INSERT into rooms (user_1 , user_2~, swap) VALUES ($1, $2) RETURNING *;",
+      "INSERT into chat_rooms (user_1 , user_2, swap_id) VALUES ($1, $2, $3) RETURNING *;",
       [user_1, user_2, swap_id]
     );
 

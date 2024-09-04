@@ -7,12 +7,14 @@
     "test": "jest --watchAll --verbose --detectOpenHandles --runInBand",
     "coverage": "jest --coverage",
     "start": "node index.js",
-    "dev": "nodemon -L index.js"
+    "dev": "nodemon -L index.js",
+    "setup-db": "node ./db/setup-db.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "api": "file:",
     "axios": "^1.7.5",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
