@@ -61,24 +61,13 @@ stages:
   #             targetPath: "$(System.ArtifactDirectory)"
 
   #         - task: KubernetesManifest@1
-  #           displayName: Secret
-  #           inputs:
-  #             action: "createSecret"
-  #             connectionType: "kubernetesServiceConnection"
-  #             kubernetesServiceConnection: "kubernetes-aws-connection"
-  #             namespace: "default"
-  #             secretType: "generic"
-  #             secretName: "token"
-  #             secretArguments: "--from-literal=SECRET_TOKEN=$(SECRET_TOKEN)"
-
-  #         - task: KubernetesManifest@1
   #           displayName: ConfigMap
   #           inputs:
   #             action: "deploy"
   #             connectionType: "kubernetesServiceConnection"
   #             kubernetesServiceConnection: "kubernetes-aws-connection"
   #             namespace: "default"
-  #             manifests: "$(System.ArtifactDirectory)/%%Directory to files%%"
+  #             manifests: "$(System.ArtifactDirectory)/configuration/config-map.yaml"
 
   #         - task: KubernetesManifest@1
   #           displayName: Deploy
@@ -87,5 +76,5 @@ stages:
   #             connectionType: "kubernetesServiceConnection"
   #             kubernetesServiceConnection: "kubernetes-aws-connection"
   #             namespace: "default"
-  #             manifests: "$(System.ArtifactDirectory)/%%Directory to files%%"
-  #             containers: "pedroavpereiradev/french-auth-api:$(tag)"
+  #             manifests: "$(System.ArtifactDirectory)/configuration/deployment.yaml"
+  #             containers: "pedroavpereiradev/book-swap-api:$(tag)"
