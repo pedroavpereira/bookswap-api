@@ -1,0 +1,80 @@
+trigger:
+  - main
+
+resources:
+  - repo: self
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  tag: "$(Build.BuildId)"
+
+stages:
+  - stage: Build
+    displayName: Build image
+    jobs:
+      - job: Docker
+        displayName: Docker
+        steps:
+          - task: Docker@2
+            displayName: Build and Push docker image
+            inputs:
+              containerRegistry: 'docker-hub-service-connection'
+              repository: 'pedroavpereiradev/book-swap-api'
+              command: 'buildAndPush'
+              Dockerfile: '**/Dockerfile'
+              tags: |
+                $(tag)
+                latest
+
+      - job: Artifacts
+        displayName: Publish Artifacts
+        steps:
+          - task: CopyFiles@2
+            displayName: Copy files to staging
+            inputs:
+              SourceFolder: "$(System.DefaultWorkingDirectory)"
+              Contents: "**/*.yaml"
+              TargetFolder: "$(Build.ArtifactStagingDirectory)"
+
+          - task: PublishBuildArtifacts@1
+            displayName: Publish Artifacts
+            inputs:
+              PathtoPublish: "$(Build.ArtifactStagingDirectory)"
+              ArtifactName: "manifests"
+              publishLocation: "Container"
+
+  # - stage: Deploy
+  #   displayName: Build image
+  #   jobs:
+  #     - job: Build
+  #       pool:
+  #         vmImage: ubuntu-latest
+  #       steps:
+  #         - task: DownloadPipelineArtifact@2
+  #           displayName: Download Artifacts
+  #           inputs:
+  #             buildType: "current"
+  #             artifactName: "manifests"
+  #             itemPattern: "**/*.yaml"
+  #             targetPath: "$(System.ArtifactDirectory)"
+
+  #         - task: KubernetesManifest@1
+  #           displayName: ConfigMap
+  #           inputs:
+  #             action: "deploy"
+  #             connectionType: "kubernetesServiceConnection"
+  #             kubernetesServiceConnection: "kubernetes-aws-connection"
+  #             namespace: "default"
+  #             manifests: "$(System.ArtifactDirectory)/configuration/config-map.yaml"
+
+  #         - task: KubernetesManifest@1
+  #           displayName: Deploy
+  #           inputs:
+  #             action: "deploy"
+  #             connectionType: "kubernetesServiceConnection"
+  #             kubernetesServiceConnection: "kubernetes-aws-connection"
+  #             namespace: "default"
+  #             manifests: "$(System.ArtifactDirectory)/configuration/deployment.yaml"
+  #             containers: "pedroavpereiradev/book-swap-api:$(tag)"

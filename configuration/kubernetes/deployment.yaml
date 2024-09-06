@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: bookswap
+    microservice: api
+  name: api
+  namespace: default
+spec:
+  replicas: 1
+  minReadySeconds: 10
+  selector:
+    matchLabels:
+      app: bookswap
+      microservice: api
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: bookswap
+        microservice: api
+    spec:
+      containers:
+        - image: pedroavpereiradev/book-swap-api:latest
+          imagePullPolicy: IfNotPresent
+          name: api
+          env:
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  key: DB_USER
+                  name: db-configmap
+            - name: DB_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  key: DB_PASSWORD
+                  name: db-configmap
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: DB_HOST
+                  name: db-configmap
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  key: DB_NAME
+                  name: db-configmap
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  key: DB_PORT
+                  name: db-configmap
+            - name: AUTH_API_URL
+              value: "http://auth:5000"
+            - name: MAILER_API_URL
+              value: "http://mailer:4000"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 250m
+              memory: 512Mi
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: bookswap
+    microservice: api
+  name: api-lb
+  namespace: default
+spec:
+  ports:
+    - port: 3000
+      protocol: TCP
+      targetPort: 3000
+  selector:
+    app: bookswap
+    microservice: api
+  sessionAffinity: None
+  type: LoadBalancer
