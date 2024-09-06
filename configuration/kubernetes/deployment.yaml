@@ -78,8 +78,7 @@ metadata:
   namespace: default
 spec:
   ports:
-    - nodePort: 30637
-      port: 3000
+    - port: 3000
       protocol: TCP
       targetPort: 3000
   selector:
